@@ -1,0 +1,44 @@
+from machine import Pin, I2C
+import time
+import m5stack
+import m5ui
+import ufont
+
+m5stack.init()
+lcd = m5stack.lcd
+
+# Draw boot screen
+lcd.clear()
+lcd.print("RAM-OS v1.0\n", 0, 0)
+lcd.print("   __  _\n", 0, 20)
+lcd.print("  (  0 0)\n", 0, 40)
+lcd.print("  (   -  )\n", 0, 60)
+lcd.print("  -------\n", 0, 80)
+lcd.print("\nWelcome to RAM-OS!\n", 0, 110)
+lcd.print("Type commands.\n\n", 0, 130)
+
+cmd = ""
+
+def process(cmd):
+    lcd.print("\n", 0, lcd.y())
+
+    if cmd == "help":
+        lcd.print("Commands: help, infared, rf, rifd, nfc, wifi, bluetooth, others\n")
+    elif cmd in ["infared", "rf", "rifd", "nfc", "wifi", "bluetooth", "others"]:
+        lcd.print("No apps yet — make one!\n")
+    else:
+        lcd.print("Unknown command\n")
+
+lcd.print("ramOS> ", 0, lcd.y())
+
+while True:
+    key = m5stack.keyboard.get_key()
+
+    if key:
+        if key == "\n":
+            process(cmd)
+            cmd = ""
+            lcd.print("ramOS> ", 0, lcd.y())
+        else:
+            cmd += key
+            lcd.print(key)
